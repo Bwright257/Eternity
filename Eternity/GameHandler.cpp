@@ -1,14 +1,31 @@
+#include <thread>
+#include <chrono>
 #include "GameHandler.h"
 
 void GameHandler::run(){
+    std::thread ticker(tick, this);
+
     while (_isRunning){
         _isRunning = handleInput();
         renderer().display();
     }
 
+    ticker.join();
     return;
 }
-#include <iostream>
+
+void GameHandler::tick(){
+    while (_isRunning){
+        if (entityManager() != nullptr){
+            entityManager()->tick();
+        }
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(_tickRate));
+    }
+
+    return;
+}
+
 bool GameHandler::handleInput(){
     bool keepRunning{true};
     renderer().mouseLocation() = Location(terminal_state(TK_MOUSE_Y), terminal_state(TK_MOUSE_X));
@@ -25,7 +42,7 @@ bool GameHandler::handleInput(){
 }
 
 void GameHandler::startGame(){
-    createSlate();
+    createSlate(std::make_shared<World>());
     createPlayer();
     return;
 }
@@ -36,32 +53,46 @@ void GameHandler::resetGame(){
 }
 
 Entity* GameHandler::player(){
-    return entityManager().entity(_playerID);
+    return entityManager()->entity(_playerID);
 }
 
 void GameHandler::createPlayer(){
-    _playerID = entityManager().createEntity(ENTITY_PLAYER, Location(0, 0))->entityID();
+    _playerID = entityManager()->createEntity(ENTITY_PLAYER, Location(0, 0))->entityID();
     return;
 }
 
 void GameHandler::movePlayer(Direction direction){
-    Location oldRegion = world().worldToLocal(player()->location()).regionLocation();
-    entityManager().moveEntity(player()->entityID(), direction);
+    World* world = dynamic_cast<World*>(area());
 
-    Location newRegion = world().worldToLocal(player()->location()).regionLocation();
-    if (oldRegion != newRegion){
-        world().update(player()->location());
+    if (world != nullptr){
+        Location oldRegion = world->worldToLocal(player()->location()).regionLocation();
+        entityManager()->moveEntity(player()->entityID(), direction);
+
+        Location newRegion = world->worldToLocal(player()->location()).regionLocation();
+        if (oldRegion != newRegion){
+            world->update(player()->location());
+        }
+    } else {
+        entityManager()->moveEntity(player()->entityID(), direction);
     }
 
     return;
 }
 
-World& GameHandler::world(){
-    return slate(_activeSlateID)->world();
+Area* GameHandler::area(){
+    if (slate(_activeSlateID) != nullptr){
+        return slate(_activeSlateID)->area();
+    }
+
+    return nullptr;
 }
 
-EntityManager& GameHandler::entityManager(){
-    return slate(_activeSlateID)->entityManager();
+EntityManager* GameHandler::entityManager(){
+    if (slate(_activeSlateID) != nullptr){
+        return &slate(_activeSlateID)->entityManager();
+    }
+
+    return nullptr;
 }
 
 Slate* GameHandler::slate(int slateID){
@@ -72,9 +103,9 @@ Slate* GameHandler::slate(int slateID){
     return nullptr;
 }
 
-void GameHandler::createSlate(){
+void GameHandler::createSlate(std::shared_ptr<Area> area){
     _activeSlateID = 0;
-    _slates.emplace(_activeSlateID, std::make_shared<Slate>());
+    _slates.emplace(_activeSlateID, std::make_shared<Slate>(std::move(area)));
     return;
 }
 

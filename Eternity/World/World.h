@@ -3,9 +3,10 @@
 #include <string>
 #include <ctime>
 #include <set>
+#include "Area.h"
 #include "Region.h"
 
-class World{
+class World : public Area{
     public:
         World(int seed = time(NULL));
         ~World();
@@ -44,8 +45,6 @@ class World{
         Region* regionAt(Location regionLocation);
         bool regionExistsAt(Location regionLocation);
 
-        int& seed(){return _seed;}
-        const int& seed() const{return _seed;}
         int& regionSize(){return _regionSize;}
         const int& regionSize() const{return _regionSize;}
         Location& activeRegion(){return _activeRegion;}
@@ -55,7 +54,6 @@ class World{
         std::map<Location, std::shared_ptr<Region>>& regions(){return _regions;}
         const std::map<Location, std::shared_ptr<Region>>& regions() const{return _regions;}
     private:
-        int _seed;
         int _regionSize;
         Location _activeRegion;
         Location _loadDistance;

@@ -4,10 +4,11 @@
 
 class GameHandler{
     public:
-        GameHandler() : _isRunning(true), _isPaused(false), _renderer(this){}
+        GameHandler() : _isRunning(true), _isPaused(false), _tickRate(500), _renderer(this){}
         ~GameHandler(){}
 
         void run();
+        void tick();
         bool handleInput();
 
         void startGame();
@@ -17,11 +18,11 @@ class GameHandler{
         void createPlayer();
         void movePlayer(Direction direction);
 
-        World& world();
-        EntityManager& entityManager();
+        Area* area();
+        EntityManager* entityManager();
 
         Slate* slate(int slateID);
-        void createSlate();
+        void createSlate(std::shared_ptr<Area> area);
         void destroySlate(int slateID);
         
         bool& isRunning(){return _isRunning;}
@@ -35,6 +36,7 @@ class GameHandler{
     private:
         bool _isRunning;
         bool _isPaused;
+        int _tickRate;
         int _playerID;
         int _activeSlateID;
         std::map<int, std::shared_ptr<Slate>> _slates;

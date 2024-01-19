@@ -3,13 +3,19 @@
 #include <memory>
 #include "Entity.h"
 
-class Slate;
+class Area;
 class EntityManager{
     public:
-        EntityManager(Slate* slate) : _slate(slate){}
+        EntityManager(Area* area) : _area(area){}
         ~EntityManager(){}
 
+        void tick();
+
         void moveEntity(int entityID, Direction direction);
+        bool canMoveTo(Location location);
+        int distanceTo(Location start, Location end);
+        std::set<Location> adjacentLocations(Location location);
+        std::vector<Direction> pathTo(Location start, Location end);
 
         Entity* entity(int entityID);
         Entity* entityAt(Location location);
@@ -18,11 +24,11 @@ class EntityManager{
         Entity* createEntity(EntityType type, Location location);
         void destroyEntity(int entityID);
 
-        Slate* slate(){return _slate;}
-        const Slate* slate() const{return _slate;}
+        Area* area(){return _area;}
+        const Area* area() const{return _area;}
         std::map<int, std::shared_ptr<Entity>>& entities(){return _entities;}
         const std::map<int, std::shared_ptr<Entity>>& entities() const{return _entities;}
     private:
-        Slate* _slate;
+        Area* _area;
         std::map<int, std::shared_ptr<Entity>> _entities;
 };

@@ -1,10 +1,21 @@
+#include <queue>
 #include "EntityManager.h"
 #include "Slate.h"
+
+void EntityManager::tick(){
+    for (auto & entity : _entities){
+        if (entity.second->hasComponent(COMP_AI)){
+
+        }
+    }
+
+    return;
+}
 
 void EntityManager::moveEntity(int entityID, Direction direction){
     Location destination = directionalLocation(entity(entityID)->location(), direction);
 
-    if (slate()->world().tileAt(destination) == TILE_GROUND && !entityExistsAt(destination)){
+    if (canMoveTo(destination)){
         entity(entityID)->location() = destination;
     } else {
         std::vector<Location> outputs;
@@ -19,10 +30,10 @@ void EntityManager::moveEntity(int entityID, Direction direction){
         for (auto & subDir : subDirections){
             Location subLoc = directionalLocation(entity(entityID)->location(), subDir);
 
-            if (slate()->world().tileAt(subLoc) == TILE_GROUND && !entityExistsAt(subLoc)){
+            if (canMoveTo(subLoc)){
                 Location output = directionalLocation(entity(entityID)->location(), addDirections(direction, subDir));
 
-                if (slate()->world().tileAt(output) == TILE_GROUND && !entityExistsAt(output)){
+                if (canMoveTo(output)){
                     outputs.push_back(output);
                 }
             }
@@ -34,6 +45,38 @@ void EntityManager::moveEntity(int entityID, Direction direction){
     }
 
     return;
+}
+
+bool EntityManager::canMoveTo(Location location){
+    return area()->tileExistsAt(location) && area()->tileAt(location) == TILE_GROUND && !entityExistsAt(location);
+}
+
+int EntityManager::distanceTo(Location start, Location end){
+    return abs(start.row() - end.row()) + abs(start.column() - end.column());
+}
+
+std::set<Location> EntityManager::adjacentLocations(Location location){
+    std::set<Location> adjacents;
+
+    for (auto & direction : cardinalDirections()){
+        adjacents.insert(directionalLocation(location, direction));
+    }
+
+    return adjacents;
+}
+
+std::vector<Direction> EntityManager::pathTo(Location start, Location end){
+    std::vector<Direction> path;
+    std::map<int, Location> locationScores;
+    std::priority_queue<int> frontier;
+
+    while (!frontier.empty()){
+        frontier.top();
+
+        
+    }
+
+    return path;
 }
 
 Entity* EntityManager::entity(int entityID){

@@ -130,3 +130,15 @@ Location Location::getDirectionalLocation(Location location, Direction direction
 Direction Location::addDirectionsTogether(Direction first, Direction second){
     return static_cast<Direction>(int(first) + int(second));
 }
+
+const std::set<Direction> Location::getCardinalDirections(){
+    return {DIR_NORTH, DIR_WEST, DIR_SOUTH, DIR_EAST};
+}
+
+const std::set<Direction> Location::getIntermediateDirections(){
+    return {DIR_NORTHEAST, DIR_NORTHWEST, DIR_SOUTHWEST, DIR_SOUTHEAST};
+}
+
+const std::set<Direction> Location::getAllDirections(){
+    return {DIR_NORTH, DIR_WEST, DIR_SOUTH, DIR_EAST, DIR_NORTHEAST, DIR_NORTHWEST, DIR_SOUTHWEST, DIR_SOUTHEAST};
+}

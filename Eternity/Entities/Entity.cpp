@@ -6,7 +6,7 @@ Entity::Entity(int entityID, EntityType type, Location location) : _entityID(ent
             createComponents({COMP_EQUIPMENT, COMP_INTERACTIVE, COMP_INVENTORY, COMP_LEVELING, COMP_STATS});
             break;
         case ENTITY_SKELETON:
-            createComponents({COMP_EQUIPMENT, COMP_INVENTORY, COMP_LEVELING, COMP_STATS});
+            createComponents({COMP_AI, COMP_EQUIPMENT, COMP_INVENTORY, COMP_LEVELING, COMP_STATS});
             break;
         case ENTITY_CHEST:
             createComponents({COMP_INTERACTIVE, COMP_INVENTORY});
@@ -22,6 +22,9 @@ void Entity::createComponent(ComponentType type){
     std::shared_ptr<Component> comp;
 
     switch (type){
+        case COMP_AI:
+            comp = std::make_shared<AIComponent>(this);
+            break;
         case COMP_EQUIPMENT:
             comp = std::make_shared<EquipmentComponent>(this);
             break;

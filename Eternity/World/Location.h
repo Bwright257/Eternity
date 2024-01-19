@@ -1,7 +1,11 @@
 #pragma once
+#include <set>
 
 #define directionalLocation(location, direction) Location::getDirectionalLocation(location, direction)
 #define addDirections(first, second) Location::addDirectionsTogether(first, second)
+#define cardinalDirections() Location::getCardinalDirections()
+#define intermediateDirections() Location::getIntermediateDirections()
+#define allDirections() Location::getAllDirections()
 
 // All cardinal and intermediate directions.
 typedef enum{DIR_NORTH = 1, DIR_WEST = 3, DIR_SOUTH = 2, DIR_EAST = 6, DIR_NORTHEAST = 7, DIR_NORTHWEST = 4, DIR_SOUTHWEST = 5, DIR_SOUTHEAST = 8} Direction;
@@ -37,9 +41,11 @@ struct Location{
         Location operator%(const int& value) const;
         Location operator%(const Location& location) const;
 
-        // Returns a location one unit away in the specified direction.
         static Location getDirectionalLocation(Location location, Direction direction);
         static Direction addDirectionsTogether(Direction first, Direction second);
+        static const std::set<Direction> getCardinalDirections();
+        static const std::set<Direction> getIntermediateDirections();
+        static const std::set<Direction> getAllDirections();
 
         int& row(){return _row;}
         const int& row() const{return _row;}

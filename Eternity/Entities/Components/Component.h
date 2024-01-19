@@ -1,6 +1,6 @@
 #pragma once
 
-typedef enum{COMP_EQUIPMENT, COMP_INTERACTIVE, COMP_INVENTORY, COMP_LEVELING, COMP_STATS} ComponentType;
+typedef enum{COMP_AI, COMP_EQUIPMENT, COMP_INTERACTIVE, COMP_INVENTORY, COMP_LEVELING, COMP_STATS} ComponentType;
 
 class Entity;
 class Component{

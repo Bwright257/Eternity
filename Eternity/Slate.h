@@ -1,17 +1,17 @@
 #pragma once
-#include "World.h"
+#include "Area.h"
 #include "EntityManager.h"
 
 class Slate{
     public:
-        Slate() : _entityManager(this){}
+        Slate(std::shared_ptr<Area> area) : _area(std::move(area)), _entityManager(_area.get()){}
         ~Slate(){}
 
-        World& world(){return _world;}
-        const World& world() const{return _world;}
+        Area* area(){return _area.get();}
+        const Area* area() const{return _area.get();}
         EntityManager& entityManager(){return _entityManager;}
         const EntityManager& entityManager() const{return _entityManager;}
     private:
-        World _world;
+        std::shared_ptr<Area> _area;
         EntityManager _entityManager;
 };

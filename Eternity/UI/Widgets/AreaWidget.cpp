@@ -13,28 +13,13 @@ void AreaWidget::display(){
     Location minRender = origin() + Location(1, 1) - renderOffset;
     Location maxRender = origin() + size() - Location(2, 2) - renderOffset;
 
-    /*std::map<Location, Tile> tiles;
-    for (int i = minRender.row(); i <= maxRender.row(); i++){
-        for (int j = minRender.column(); j <= maxRender.column(); j++){
-            Location worldLocation = Location(i, j);
-
-            if (renderer()->game()->world().tileExistsAt(worldLocation)){
-                tiles.emplace(worldLocation, renderer()->game()->world().tileAt(worldLocation));
-            }
-        }
-    }*/
-
     for (int i = minRender.row(); i <= maxRender.row(); i++){
         for (int j = minRender.column(); j <= maxRender.column(); j++){
             Location worldLocation = Location(i, j);
             Location screenLocation = worldLocation + renderOffset;
 
-            if (renderer()->game()->world().tileExistsAt(worldLocation)){
-                if (renderer()->game()->world().numAdjacentWalls(worldLocation) == 4 && renderer()->game()->world().tileAt(worldLocation) == TILE_WALL){
-                    terminal_put(screenLocation.column(), screenLocation.row(), '.');
-                } else {
-                    terminal_put(screenLocation.column(), screenLocation.row(), char(renderer()->game()->world().tileAt(worldLocation)));
-                }
+            if (renderer()->game()->area()->tileExistsAt(worldLocation)){
+                terminal_put(screenLocation.column(), screenLocation.row(), char(renderer()->game()->area()->tileAt(worldLocation)));
             }
         }
     }

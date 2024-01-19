@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "Location.h"
+#include "AIComponent.h"
 #include "EquipmentComponent.h"
 #include "InteractiveComponent.h"
 #include "InventoryComponent.h"
