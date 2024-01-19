@@ -1,0 +1,5 @@
+#include <Windows.h>
+
+MAINICON ICON "Eternity.ico"
+
+//windres.exe -i "data/Eternity.rc" --input-format=rc -o "data/Eternity.res" -O coff
