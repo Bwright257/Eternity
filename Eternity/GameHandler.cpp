@@ -79,6 +79,14 @@ void GameHandler::movePlayer(Direction direction){
     return;
 }
 
+void GameHandler::moveSlate(int slateID){
+    if (slateID != _activeSlateID){
+
+    }
+
+    return;
+}
+
 Area* GameHandler::area(){
     if (slate(_activeSlateID) != nullptr){
         return slate(_activeSlateID)->area();

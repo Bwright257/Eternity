@@ -17,6 +17,7 @@ class GameHandler{
         Entity* player();
         void createPlayer();
         void movePlayer(Direction direction);
+        void moveSlate(int slateID);
 
         Area* area();
         EntityManager* entityManager();

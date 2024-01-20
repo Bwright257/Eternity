@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <cmath>
 #include <queue>
 #include "EntityManager.h"
 #include "Slate.h"
@@ -55,6 +57,25 @@ int EntityManager::distanceTo(Location start, Location end){
     return abs(start.row() - end.row()) + abs(start.column() - end.column());
 }
 
+Direction EntityManager::directionTo(Location start, Location end){
+    Direction direction{DIR_NORTH};
+
+    float pi = atan(1)*4;
+    float angle = atan2f(start.column() - end.column(), start.row() - end.row());
+    
+    if (angle > -pi/4 && angle <= pi/4){
+        direction = DIR_NORTH;
+    } else if (angle > pi/4 && angle <= 3*pi/4){
+        direction = DIR_WEST;
+    } else if ((angle > 3*pi/4 && angle <= pi) || (angle >= -pi && angle <= -3*pi/4)){
+        direction = DIR_SOUTH;
+    } else if (angle > -3*pi/4 && angle <= -pi/4){
+        direction = DIR_EAST;
+    }
+
+    return direction;
+}
+
 std::set<Location> EntityManager::adjacentLocations(Location location){
     std::set<Location> adjacents;
 
@@ -67,15 +88,60 @@ std::set<Location> EntityManager::adjacentLocations(Location location){
 
 std::vector<Direction> EntityManager::pathTo(Location start, Location end){
     std::vector<Direction> path;
-    std::map<int, Location> locationScores;
-    std::priority_queue<int> frontier;
 
-    while (!frontier.empty()){
-        frontier.top();
+    class QueueCompare{
+        public:
+            bool operator()(std::pair<int, Location> pairOne, std::pair<int, Location> pairTwo){
+                return pairOne.first > pairTwo.first;
+            }
+    };
 
+    std::priority_queue<std::pair<int, Location>, std::vector<std::pair<int, Location>>, QueueCompare> costs;
+    costs.push({0, start});
+
+    std::map<Location, int> open = {{start, 0}};
+    std::set<Location> closed;
+    std::map<Location, Location> cameFrom;
+
+    bool searching = true;
+    while (searching && !open.empty()){
+        int currentCost = costs.top().first;
+        Location currentLoc = costs.top().second;
+
+        costs.pop();
+        open.erase(currentLoc);
+        closed.insert(currentLoc);
+
+        if (currentLoc == end){
+            searching = false;
+        } else {
+            for (auto & neighbor : adjacentLocations(currentLoc)){
+                if (canMoveTo(neighbor) && closed.count(neighbor) == 0){
+                    int cost = distanceTo(neighbor, start) + distanceTo(neighbor, end);
+
+                    if (cost < currentCost || open.count(neighbor) == 0){
+                        costs.push({cost, neighbor});
+                        open.emplace(neighbor, cost);
+                        cameFrom[neighbor] = currentLoc;
+                    }
+                }
+            }
+        }
+    } 
+
+    if (!open.empty()){
+        Location current = end;
+        while (current != start){
+            path.push_back(directionTo(current, cameFrom[current]));
+            current = cameFrom[current];
+        }
         
+        std::reverse(path.begin(), path.end());
+        for (auto & direction : path){
+            direction = reverseDirection(direction);
+        }
     }
-
+    
     return path;
 }
 

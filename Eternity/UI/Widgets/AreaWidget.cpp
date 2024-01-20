@@ -19,12 +19,17 @@ void AreaWidget::display(){
             Location screenLocation = worldLocation + renderOffset;
 
             if (renderer()->game()->area()->tileExistsAt(worldLocation)){
+                if (renderer()->mouseLocation() == screenLocation){
+                    terminal_color(color_from_name("red"));
+                }
+
                 terminal_put(screenLocation.column(), screenLocation.row(), char(renderer()->game()->area()->tileAt(worldLocation)));
+                terminal_color(color_from_name("white"));
             }
         }
     }
     
-    for (auto & entityID : renderer()->game()->slate(renderer()->game()->activeSlateID())->entityManager().entities()){
+    for (auto & entityID : renderer()->game()->entityManager()->entities()){
         Entity* entity = entityID.second.get();
         Location renderLocation = entity->location() + renderOffset;
 

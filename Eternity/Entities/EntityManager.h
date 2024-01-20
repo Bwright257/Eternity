@@ -14,6 +14,7 @@ class EntityManager{
         void moveEntity(int entityID, Direction direction);
         bool canMoveTo(Location location);
         int distanceTo(Location start, Location end);
+        Direction directionTo(Location start, Location end);
         std::set<Location> adjacentLocations(Location location);
         std::vector<Direction> pathTo(Location start, Location end);
 
