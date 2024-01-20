@@ -178,7 +178,8 @@ bool EntityManager::entityExistsAt(Location location){
 }
 
 Entity* EntityManager::createEntity(EntityType type, Location location){
-    int entityID = 0;
+    static int entityID{-1};
+    entityID++;
     _entities.emplace(entityID, std::make_shared<Entity>(entityID, type, location));
     return entity(entityID);
 }

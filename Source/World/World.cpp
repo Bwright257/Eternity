@@ -5,11 +5,11 @@
 #include "World.h"
 
 World::World(int seed) : Area(seed), _regionSize(35), _activeRegion(Location(0, 0)), _loadDistance(Location(1, 2)){
-    init();
     for (auto & file : std::filesystem::directory_iterator("Data/Regions")){
         std::filesystem::remove_all(file.path());
     }
     
+    init();
     return;
 }
 

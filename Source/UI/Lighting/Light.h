@@ -4,9 +4,10 @@
 
 struct Light{
     public:
-        Light(Location source, color_t color, float intensity, float range) : _source(source), _color(color), _intensity(intensity), _range(range){}
+        Light(int lightID, Location source, color_t color, float intensity, float range) : _lightID(lightID), _source(source), _color(color), _intensity(intensity), _range(range){}
         ~Light(){}
 
+        const int& lightID() const{return _lightID;}
         Location& source(){return _source;}
         const Location& source() const{return _source;}
         color_t& color(){return _color;}
@@ -16,6 +17,7 @@ struct Light{
         float& range(){return _range;}
         const float& range() const{return _range;}
     private:
+        const int _lightID;
         Location _source;
         color_t _color;
         float _intensity;

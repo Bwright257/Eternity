@@ -81,7 +81,7 @@ void GameHandler::movePlayer(Direction direction){
 
 void GameHandler::moveSlate(int slateID){
     if (slateID != _activeSlateID){
-
+        
     }
 
     return;
@@ -112,8 +112,10 @@ Slate* GameHandler::slate(int slateID){
 }
 
 void GameHandler::createSlate(std::shared_ptr<Area> area){
-    _activeSlateID = 0;
-    _slates.emplace(_activeSlateID, std::make_shared<Slate>(std::move(area)));
+    static int slateID{-1};
+    slateID++;
+    _activeSlateID = slateID;
+    _slates.emplace(slateID, std::make_shared<Slate>(slateID, std::move(area)));
     return;
 }
 
